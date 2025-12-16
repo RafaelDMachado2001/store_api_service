@@ -25,11 +25,12 @@ cd store_api_service
 
 Se o arquivo `.env` não existir, crie-o baseado nas configurações do `docker-compose.yml`. As variáveis de ambiente principais são:
 
--   `APP_PORT`: Porta da aplicação (padrão: 80)
--   `DB_DATABASE`: Nome do banco de dados (padrão: store_api_service)
--   `DB_USERNAME`: Usuário do banco de dados (padrão: sail)
--   `DB_PASSWORD`: Senha do banco de dados (padrão: password)
--   `FORWARD_DB_PORT`: Porta do PostgreSQL (padrão: 5432)
+-   `DB_CONNECTION`: pgsql
+-   `DB_HOST`: pgsql
+-   `DB_PORT`: 5432
+-   `DB_DATABASE`: store_api_service
+-   `DB_USERNAME`: sail
+-   `DB_PASSWORD`: password
 
 ### 3. Rodar os Containers Docker
 
@@ -59,7 +60,15 @@ Instale as dependências do Composer dentro do container:
 docker-compose exec frontend composer install
 ```
 
-### 5. Executar Migrations
+### 5. Chave do projeto
+
+Gere a chave para o projeto
+
+```bash
+docker-compose exec frontend php artisan key:generate
+```
+
+### 6. Executar Migrations
 
 Execute as migrations para criar as tabelas no banco de dados:
 
@@ -67,7 +76,7 @@ Execute as migrations para criar as tabelas no banco de dados:
 docker-compose exec frontend php artisan migrate
 ```
 
-### 6. Alimentar o Banco com Seeders
+### 7. Alimentar o Banco com Seeders
 
 Execute os seeders para popular o banco de dados com dados iniciais:
 
