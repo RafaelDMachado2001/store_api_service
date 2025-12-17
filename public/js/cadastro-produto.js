@@ -175,6 +175,7 @@ async function submitForm(event) {
 
     const btnCadastrar = document.getElementById('btnCadastrar');
     btnCadastrar.disabled = true;
+    LoadingManager.start();
     showLoading('Cadastrando produto...');
     clearFieldErrors();
 
@@ -191,6 +192,7 @@ async function submitForm(event) {
         });
 
         const data = await response.json();
+        LoadingManager.done();
         hideLoading();
         btnCadastrar.disabled = false;
 
@@ -218,6 +220,7 @@ async function submitForm(event) {
             showMessage(data.mensagem || 'Erro ao cadastrar produto. Verifique os campos destacados.', 'error');
         }
     } catch (error) {
+        LoadingManager.done();
         hideLoading();
         btnCadastrar.disabled = false;
         showMessage('Erro ao cadastrar produto: ' + error.message, 'error');

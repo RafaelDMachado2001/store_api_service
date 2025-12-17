@@ -7,6 +7,8 @@
     <title>Cadastro de Produto</title>
     <link rel="stylesheet" href="{{ asset('css/sincronizacao.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cadastro-produto.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 
 <body>
@@ -172,8 +174,9 @@
         </form>
     </div>
 
+    <script src="{{ asset('js/nprogress.js') }}"></script>
+    <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/cadastro-produto.js') }}"></script>
 </body>
 
 </html>
-

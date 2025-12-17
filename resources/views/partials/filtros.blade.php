@@ -1,5 +1,4 @@
 <div class="filters-section">
-    <div class="filters-title">Filtros de Produtos</div>
     <div class="filters-grid">
         <div class="filter-group">
             <label class="filter-label" for="product-search">Pesquisar Produtos</label>

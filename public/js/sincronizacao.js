@@ -39,6 +39,7 @@ function formatPercent(value) {
 async function sincronizarProdutos() {
     const btn = document.getElementById('btnSincronizarProdutos');
     btn.disabled = true;
+    LoadingManager.start();
     showLoading('Sincronizando produtos...');
 
     try {
@@ -51,6 +52,7 @@ async function sincronizarProdutos() {
         });
 
         const data = await response.json();
+        LoadingManager.done();
         hideLoading();
         btn.disabled = false;
 
@@ -61,6 +63,7 @@ async function sincronizarProdutos() {
             showMessage(data.mensagem, 'error');
         }
     } catch (error) {
+        LoadingManager.done();
         hideLoading();
         btn.disabled = false;
         showMessage('Erro ao sincronizar produtos: ' + error.message, 'error');
@@ -70,6 +73,7 @@ async function sincronizarProdutos() {
 async function sincronizarPrecos() {
     const btn = document.getElementById('btnSincronizarPrecos');
     btn.disabled = true;
+    LoadingManager.start();
     showLoading('Sincronizando preços...');
 
     try {
@@ -82,6 +86,7 @@ async function sincronizarPrecos() {
         });
 
         const data = await response.json();
+        LoadingManager.done();
         hideLoading();
         btn.disabled = false;
 
@@ -92,6 +97,7 @@ async function sincronizarPrecos() {
             showMessage(data.mensagem, 'error');
         }
     } catch (error) {
+        LoadingManager.done();
         hideLoading();
         btn.disabled = false;
         showMessage('Erro ao sincronizar preços: ' + error.message, 'error');
@@ -189,17 +195,56 @@ function renderProducts(produtos) {
 }
 
 async function carregarProdutos() {
+    const container = document.getElementById('productsContainer');
+    const list = document.getElementById('productsList');
+    const skeletonLoader = document.getElementById('skeletonLoader');
+    
+    LoadingManager.start();
+    
+    if (container && list) {
+        container.style.display = 'block';
+        if (skeletonLoader) {
+            skeletonLoader.style.display = 'block';
+            skeletonLoader.innerHTML = createProductSkeleton(3);
+        }
+    }
+
     try {
-        const response = await fetch(`${API_BASE_URL}/produtos/lista`);
-        const data = await response.json();
+        const { response, data } = await fetchWithLoading(`${API_BASE_URL}/produtos/lista`);
+
+        if (skeletonLoader) {
+            skeletonLoader.style.display = 'none';
+        }
 
         if (data.sucesso) {
             renderProducts(data.produtos);
             populateFilterOptions(data.produtos);
         } else {
+            if (container && list) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <div class="empty-state-text">Erro ao carregar produtos</div>
+                    </div>
+                `;
+                container.style.display = 'block';
+            }
             showMessage('Erro ao carregar produtos', 'error');
         }
     } catch (error) {
+        LoadingManager.done();
+        if (skeletonLoader) {
+            skeletonLoader.style.display = 'none';
+        }
+        if (container && list) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <div class="empty-state-text">Erro ao carregar produtos: ${error.message}</div>
+                </div>
+            `;
+            container.style.display = 'block';
+        }
         showMessage('Erro ao carregar produtos: ' + error.message, 'error');
     }
 }

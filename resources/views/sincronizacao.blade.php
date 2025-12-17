@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('css/sincronizacao.css') }}">
     <link rel="stylesheet" href="{{ asset('css/filtros.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cadastro-produto.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 
 <body>
@@ -35,10 +37,14 @@
                 <h2>Produtos Processados</h2>
                 <span class="products-count" id="productsCount">0 produtos</span>
             </div>
-            <div class="products-list" id="productsList"></div>
+            <div class="products-list" id="productsList">
+                <div class="skeleton-loader" id="skeletonLoader" style="display: none;"></div>
+            </div>
         </div>
     </div>
 
+    <script src="{{ asset('js/nprogress.js') }}"></script>
+    <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/sincronizacao.js') }}"></script>
 </body>
 
