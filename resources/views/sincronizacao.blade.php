@@ -7,11 +7,15 @@
     <title>Sincronização de Produtos e Preços</title>
     <link rel="stylesheet" href="{{ asset('css/sincronizacao.css') }}">
     <link rel="stylesheet" href="{{ asset('css/filtros.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cadastro-produto.css') }}">
 </head>
 
 <body>
     <div class="container">
-        <h1>Sincronização de Produtos e Preços</h1>
+        <div class="header-navigation">
+            <a href="/cadastro-produto" class="nav-link">+ Cadastrar Novo Produto</a>
+            <h1>Sincronização de Produtos e Preços</h1>
+        </div>
 
         <div class="buttons-container">
             <button class="btn btn-primary" id="btnSincronizarProdutos">

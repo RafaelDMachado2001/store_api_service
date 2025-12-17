@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('sincronizacao');
 });
+
+Route::get('/cadastro-produto', function () {
+    return view('cadastro-produto');
+});
