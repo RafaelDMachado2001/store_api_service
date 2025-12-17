@@ -165,6 +165,88 @@ function buildFormData() {
     return formData;
 }
 
+function isEditMode() {
+    const produtoIdInput = document.getElementById('produto_id');
+    return produtoIdInput && produtoIdInput.value;
+}
+
+function getProdutoId() {
+    const produtoIdInput = document.getElementById('produto_id');
+    return produtoIdInput ? produtoIdInput.value : null;
+}
+
+function formatDateForInput(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+}
+
+function fillFormWithProductData(produto) {
+    document.getElementById('codigo').value = produto.codigo || '';
+    document.getElementById('nome').value = produto.nome || '';
+    document.getElementById('categoria').value = produto.categoria || '';
+    document.getElementById('subcategoria').value = produto.subcategoria || '';
+    document.getElementById('descricao').value = produto.descricao || '';
+    document.getElementById('fabricante').value = produto.fabricante || '';
+    document.getElementById('modelo').value = produto.modelo || '';
+    document.getElementById('cor').value = produto.cor || '';
+    document.getElementById('peso').value = produto.peso || '';
+    document.getElementById('largura').value = produto.largura || '';
+    document.getElementById('altura').value = produto.altura || '';
+    document.getElementById('profundidade').value = produto.profundidade || '';
+    document.getElementById('unidade').value = produto.unidade || '';
+    document.getElementById('data_cadastro').value = formatDateForInput(produto.data_cadastro);
+
+    if (produto.precos && produto.precos.length > 0) {
+        const preco = produto.precos[0];
+        document.getElementById('preco_valor').value = preco.valor || '';
+        document.getElementById('preco_moeda').value = preco.moeda || 'BRL';
+        document.getElementById('preco_desconto_percentual').value = preco.desconto_percentual || '';
+        document.getElementById('preco_acrescimo_percentual').value = preco.acrescimo_percentual || '';
+        document.getElementById('preco_valor_promocional').value = preco.valor_promocional || '';
+        document.getElementById('preco_data_inicio_promocao').value = formatDateForInput(preco.data_inicio_promocao);
+        document.getElementById('preco_data_fim_promocao').value = formatDateForInput(preco.data_fim_promocao);
+        document.getElementById('preco_origem').value = preco.origem || '';
+        document.getElementById('preco_tipo_cliente').value = preco.tipo_cliente || '';
+        document.getElementById('preco_vendedor_responsavel').value = preco.vendedor_responsavel || '';
+        document.getElementById('preco_observacoes').value = preco.observacoes || '';
+    }
+}
+
+async function carregarProdutoParaEdicao(id) {
+    LoadingManager.start();
+    showLoading('Carregando produto...');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/produtos/${id}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+        LoadingManager.done();
+        hideLoading();
+
+        if (response.ok && data.sucesso && data.dados) {
+            fillFormWithProductData(data.dados);
+        } else {
+            showMessage(data.mensagem || 'Erro ao carregar produto.', 'error');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        }
+    } catch (error) {
+        LoadingManager.done();
+        hideLoading();
+        showMessage('Erro ao carregar produto: ' + error.message, 'error');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 2000);
+    }
+}
+
 async function submitForm(event) {
     event.preventDefault();
     
@@ -176,14 +258,19 @@ async function submitForm(event) {
     const btnCadastrar = document.getElementById('btnCadastrar');
     btnCadastrar.disabled = true;
     LoadingManager.start();
-    showLoading('Cadastrando produto...');
+    
+    const editMode = isEditMode();
+    showLoading(editMode ? 'Atualizando produto...' : 'Cadastrando produto...');
     clearFieldErrors();
 
     try {
         const formData = buildFormData();
+        const produtoId = getProdutoId();
+        const url = editMode ? `${API_BASE_URL}/produtos/${produtoId}` : `${API_BASE_URL}/produtos`;
+        const method = editMode ? 'PUT' : 'POST';
         
-        const response = await fetch(`${API_BASE_URL}/produtos`, {
-            method: 'POST',
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -197,9 +284,12 @@ async function submitForm(event) {
         btnCadastrar.disabled = false;
 
         if (response.ok && data.sucesso) {
-            showMessage(data.mensagem || 'Produto cadastrado com sucesso!', 'success');
-            document.getElementById('formCadastroProduto').reset();
-            clearFieldErrors();
+            showMessage(data.mensagem || (editMode ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!'), 'success');
+            
+            if (!editMode) {
+                document.getElementById('formCadastroProduto').reset();
+                clearFieldErrors();
+            }
             
             setTimeout(() => {
                 window.location.href = '/';
@@ -217,13 +307,13 @@ async function submitForm(event) {
                     showFieldError(fieldName, messages);
                 });
             }
-            showMessage(data.mensagem || 'Erro ao cadastrar produto. Verifique os campos destacados.', 'error');
+            showMessage(data.mensagem || (editMode ? 'Erro ao atualizar produto. Verifique os campos destacados.' : 'Erro ao cadastrar produto. Verifique os campos destacados.'), 'error');
         }
     } catch (error) {
         LoadingManager.done();
         hideLoading();
         btnCadastrar.disabled = false;
-        showMessage('Erro ao cadastrar produto: ' + error.message, 'error');
+        showMessage((isEditMode() ? 'Erro ao atualizar produto: ' : 'Erro ao cadastrar produto: ') + error.message, 'error');
     }
 }
 
@@ -237,10 +327,15 @@ document.addEventListener('DOMContentLoaded', function() {
         clearFieldErrors();
     });
 
-    const dateInput = document.getElementById('data_cadastro');
-    if (dateInput && !dateInput.value) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
+    const produtoId = getProdutoId();
+    if (produtoId) {
+        carregarProdutoParaEdicao(produtoId);
+    } else {
+        const dateInput = document.getElementById('data_cadastro');
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
     }
 });
 

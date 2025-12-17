@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Produto</title>
+    <title>{{ isset($produtoId) ? 'Editar Produto' : 'Cadastro de Produto' }}</title>
     <link rel="stylesheet" href="{{ asset('css/sincronizacao.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cadastro-produto.css') }}">
     <link rel="stylesheet" href="{{ asset('css/nprogress.css') }}">
@@ -15,13 +15,16 @@
     <div class="container">
         <div class="header-navigation">
             <a href="/" class="nav-link">← Voltar para Sincronização</a>
-            <h1>Cadastro de Produto</h1>
+            <h1>{{ isset($produtoId) ? 'Editar Produto' : 'Cadastro de Produto' }}</h1>
         </div>
 
         <div id="messageContainer"></div>
         <div id="loadingContainer"></div>
 
         <form id="formCadastroProduto" class="product-form">
+            @if(isset($produtoId))
+            <input type="hidden" id="produto_id" value="{{ $produtoId }}">
+            @endif
             <div class="form-section">
                 <h2 class="section-title">Informações do Produto</h2>
                 <div class="form-grid">
@@ -165,7 +168,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary" id="btnCadastrar">
-                    Cadastrar Produto
+                    {{ isset($produtoId) ? 'Atualizar Produto' : 'Cadastrar Produto' }}
                 </button>
                 <button type="reset" class="btn btn-secondary" id="btnLimpar">
                     Limpar Formulário

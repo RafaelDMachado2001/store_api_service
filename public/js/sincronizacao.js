@@ -169,6 +169,9 @@ function renderProducts(produtos) {
                         <div class="product-title">${produto.nome}</div>
                         <div class="product-code">Código: ${produto.codigo}</div>
                     </div>
+                    <div>
+                        <a href="/editar-produto/${produto.id}" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9em;">Editar</a>
+                    </div>
                 </div>
                 <div class="product-info">
                     ${produto.categoria ? `<div class="product-info-item"><span class="product-info-label">Categoria:</span> ${produto.categoria}</div>` : ''}

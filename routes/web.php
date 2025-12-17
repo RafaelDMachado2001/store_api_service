@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/cadastro-produto', function () {
     return view('cadastro-produto');
 });
+
+Route::get('/editar-produto/{id}', function ($id) {
+    return view('cadastro-produto', ['produtoId' => $id]);
+});

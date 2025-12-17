@@ -13,3 +13,5 @@ Route::post('/sincronizar/produtos', [SincronizacaoController::class, 'sincroniz
 Route::post('/sincronizar/precos', [SincronizacaoController::class, 'sincronizarPrecos']);
 Route::get('/produtos/lista', [ProdutoController::class, 'lista']);
 Route::post('/produtos', [ProdutoController::class, 'store']);
+Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
+Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
