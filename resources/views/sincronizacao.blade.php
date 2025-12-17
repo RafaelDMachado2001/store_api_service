@@ -7,11 +7,17 @@
     <title>Sincronização de Produtos e Preços</title>
     <link rel="stylesheet" href="{{ asset('css/sincronizacao.css') }}">
     <link rel="stylesheet" href="{{ asset('css/filtros.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cadastro-produto.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 
 <body>
     <div class="container">
-        <h1>Sincronização de Produtos e Preços</h1>
+        <div class="header-navigation">
+            <a href="/cadastro-produto" class="nav-link">+ Cadastrar Novo Produto</a>
+            <h1>Sincronização de Produtos e Preços</h1>
+        </div>
 
         <div class="buttons-container">
             <button class="btn btn-primary" id="btnSincronizarProdutos">
@@ -31,10 +37,14 @@
                 <h2>Produtos Processados</h2>
                 <span class="products-count" id="productsCount">0 produtos</span>
             </div>
-            <div class="products-list" id="productsList"></div>
+            <div class="products-list" id="productsList">
+                <div class="skeleton-loader" id="skeletonLoader" style="display: none;"></div>
+            </div>
         </div>
     </div>
 
+    <script src="{{ asset('js/nprogress.js') }}"></script>
+    <script src="{{ asset('js/loading.js') }}"></script>
     <script src="{{ asset('js/sincronizacao.js') }}"></script>
 </body>
 
